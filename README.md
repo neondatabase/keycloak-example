@@ -4,7 +4,13 @@
 
 If you'd like to quickly and easily deploy Keycloak on a hosting provider,
 complete the steps in _Neon Postgres Database Setup_ below, then click the
-button above to deploy Keycloak on Koyeb.
+button above to deploy Keycloak on Koyeb. Make sure that you configure the
+following values on Koyeb:
+
+* `KC_DB_URL`, `KC_DB_PASSWORD`, `KC_DB_USERNAME` - Refer to [Neon Postgres Database Setup](#neon-postgres-database-setup).
+* `KEYCLOAK_ADMIN_PASSWORD` - You'll use this to login to the Keycloak console as the `admin` user.
+* `KC_HOSTNAME` - This should be set to the **App name** at the end of the Koyeb deployment UI.
+* Ideally, select a depoloyment region close to your Neon database.
 
 ## Development Setup
 
