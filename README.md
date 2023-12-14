@@ -1,5 +1,11 @@
 # Neon Database and Keycloak
 
+[![Deploy to Koyeb](https://www.koyeb.com/static/images/deploy/button.svg)](https://app.koyeb.com/apps/deploy?type=docker&image=quay.io%2Fkeycloak%2Fkeycloak%3A23.0.1&name=keycloak&env%5BKC_DB_USERNAME%5D=&env%5BKC_DB_PASSWORD%5D=&env%5BKC_DB_URL%5D=jdbc%3Apostgresql%3A%2F%2FNEON_HOSTNAME%2Fkeycloak%3Fsslmode%3Drequire&env%5BKC_HOSTNAME%5D=&env%5BKC_HTTP_ENABLED%5D=true&env%5BKC_PROXY%5D=edge&env%5BKC_DB%5D=postgres&ports=8080%3Bhttp%3B%2F&tag=23.0.1&docker.image.tag=23.0.1&image-tag=23.0.1&command=start&env%5BKEYCLOAK_ADMIN%5D=admin&env%5BKEYCLOAK_ADMIN_PASSWORD%5D=)
+
+If you'd like to quickly and easily deploy Keycloak on a hosting provider,
+complete the steps in _Neon Postgres Database Setup_ below, then click the
+button above to deploy Keycloak on Koyeb.
+
 ## Development Setup
 
 Keycloak can be run locally if you have a JDK installed per the 
@@ -17,6 +23,8 @@ development guide will use Docker to run Keycloak locally.
 CREATE USER keycloak_admin WITH PASSWORD 'r3plac3_th1s';
 GRANT ALL ON SCHEMA public TO keycloak_admin;
 ```
+1. Return to the **Connection Details** screen in your Neon project and take
+note of your database's hostname, since you'll need it soon.
 
 ### Run Keycloak in Dev Mode
 
@@ -53,6 +61,9 @@ Keycloak is ready when the following log is printed:
 Keycloak 23.0.1 on JVM (powered by Quarkus 3.2.9.Final) started in 175.226s. Listening on: http://0.0.0.0:8080
 ```
 
+> [!NOTE]  
+> This log line is from the initial Keycloak startup using an M2 MacBook Pro using Docker. Startup times are measured in seconds afterwards. On Linux machines that don't require virtualisation to run containers the startup is always measured in seconds.
+
 ## Connect an Application to Keycloak
 
 Once you have Keycloak running and connectd to your Neon Postgres database, you
@@ -78,7 +89,7 @@ docker build . -t neon-keycloak
 
 ### Run the Container Image
 
-```
+```bash
 # Create a .env file
 cp .env.example .env
 
@@ -87,12 +98,10 @@ vi .env
 
 docker run --rm --name neon-keycloak \
 -p 8080:8080 \
--v $(pwd)/realms:/opt/keycloak/data/import \
--e KC_DB=postgres \
 -e KC_DB_URL=$KC_DB_URL \
 -e KC_DB_PASSWORD=$KC_DB_PASSWORD \
 -e KC_DB_USERNAME=$KC_DB_USERNAME \
 -e KEYCLOAK_ADMIN=$KEYCLOAK_ADMIN \
 -e KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_ADMIN_PASSWORD \
-quay.io/keycloak/keycloak:23.0.1 start-dev --import-realm
+neon-keycloak start --optimized
 ```
